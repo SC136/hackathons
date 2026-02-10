@@ -462,7 +462,8 @@ const total = entries.length;
 const selfKey = "sc";
 const buddies = findHackathonBuddies(entries, selfKey, 5);
 const buddy = buddies[0] || null;
-const commonLocation = mostCommonLocation(entries);
+const locations = mostCommonLocations(entries, 5);
+const commonLocation = locations[0] || null;
 const longestEvent = longestDuration(entries);
 
 document.getElementById("summary").innerHTML = `
@@ -479,7 +480,11 @@ document.getElementById("summary").innerHTML = `
     </div>
     <div class="stat">
       <span>Most common location</span>
-      <span>${commonLocation ? `${commonLocation.location} (${commonLocation.count})` : "—"}</span>
+      <span class="buddy">
+        ${locationLabel(commonLocation)}
+        ${locations.length > 1 ? `<span class="buddy-toggle" aria-hidden="true">▾</span>` : ""}
+        ${locations.length > 1 ? `<span class="buddy-list">${locationList(locations)}</span>` : ""}
+      </span>
     </div>
     <div class="stat">
       <span>Longest hackathon</span>
@@ -526,17 +531,30 @@ function memberLabel(key) {
   return members[key] ? members[key].name : String(key);
 }
 
-function mostCommonLocation(list) {
+function mostCommonLocations(list, limit) {
   const counts = new Map();
   list.forEach((entry) => {
     if (!entry.location) return;
     counts.set(entry.location, (counts.get(entry.location) || 0) + 1);
   });
-  let best = null;
-  counts.forEach((count, location) => {
-    if (!best || count > best.count) best = { location, count };
-  });
-  return best;
+  return Array.from(counts.entries())
+    .map(([location, count]) => ({ location, count }))
+    .sort((a, b) => b.count - a.count || a.location.localeCompare(b.location))
+    .slice(0, limit);
+}
+
+function locationLabel(location) {
+  if (!location) return "—";
+  return `${location.location} (${location.count})`;
+}
+
+function locationList(list) {
+  return list
+    .map((item, index) => {
+      const label = `${index + 1}. ${locationLabel(item)}`;
+      return `<span class="buddy-item">${label}</span>`;
+    })
+    .join("");
 }
 
 function longestDuration(list) {
