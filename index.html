@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Hackathon Logbook</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="container">
+
+  <div class="title">Hackathon Logbook</div>
+  <div class="subtitle">
+    A record of weekends spent building instead of resting.
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="filters" id="filters">
+    <div class="filter">
+      <label for="filter-year">Year</label>
+      <select id="filter-year"></select>
+    </div>
+    <div class="filter">
+      <label for="filter-result">Result</label>
+      <select id="filter-result"></select>
+    </div>
+    <div class="filter">
+      <label for="filter-location">Location</label>
+      <select id="filter-location"></select>
+    </div>
+    <button class="filter-reset" id="filter-reset" type="button">Reset</button>
+  </div>
+
+  <div id="timeline"></div>
+
+  <div class="reflection" id="summary"></div>
+
+  <div class="footer">
+    this page exists so i don’t forget how far i’ve come
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
