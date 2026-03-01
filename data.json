@@ -256,8 +256,8 @@
             "location": "Mumbai - Malad",
             "duration": "6 hours",
             "images": [
-                "assets/hackdeck.jpeg",
-                "assets/hack_deck.jpg"
+                "assets/hackdeck.jpg",
+                "assets/hack_deck.jpeg"
             ],
             "team": [
                 "sc",
