@@ -428,6 +428,7 @@
         },
         {
             "year": 2025,
+            "date": "22-12-2025",
             "name": "Techfest Meshmerize",
             "result": "loss",
             "description": "Built an autonomous maze-solving robot: mecanum wheels, 12 IR sensors, ESP32 + Arduino.",
