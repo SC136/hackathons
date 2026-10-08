@@ -59,6 +59,12 @@
         "slora": {
             "name": "Slora",
             "url": "https://github.com/Slora123"
+        },
+        "norris": {
+            "name": "Norris"
+        },
+        "arya": {
+            "name": "Arya"
         }
     },
     "entries": [
@@ -283,6 +289,133 @@
                 "sai",
                 "slora",
                 "Larisa"
+            ]
+        },
+        {
+            "year": 2025,
+            "date": "22-11-2025",
+            "name": "Odoo x SPIT Hackathon",
+            "result": "loss",
+            "description": "Virtual round. Built StockMaster, an inventory management system with double-entry stock tracking.",
+            "location": "Online",
+            "duration": "8 hours",
+            "team": [
+                "sc"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "21-2-2026",
+            "name": "SPIT Hackathon 2026",
+            "result": "loss",
+            "description": "Built DeFi RASH, an AI-assisted DeFi risk and liquidity simulation platform.",
+            "location": "Mumbai - Andheri",
+            "team": [
+                "sc",
+                "david",
+                "sai",
+                "sherv"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "25-3-2026",
+            "name": "DJSCE HackNiche 4.0",
+            "result": "Finalists",
+            "description": "Built BEACON, a web accessibility and security auditing platform.",
+            "location": "Mumbai - Vile Parle",
+            "team": [
+                "sc",
+                "sherv",
+                "sai",
+                "david"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "5-4-2026",
+            "name": "DJSCSI Codeshastra",
+            "result": "loss",
+            "description": "Built GeoClash: map your run, own your neighborhood.",
+            "location": "Mumbai - Vile Parle",
+            "team": [
+                "sc"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "28-4-2026",
+            "name": "Google Solution Challenge 2026",
+            "result": "loss",
+            "description": "Submitted Edgecase, an AI supply chain risk analyser. 6,700+ prototypes; didn't make the Top 106.",
+            "location": "Online",
+            "duration": "Varied",
+            "projectUrl": "https://github.com/Chronos778/Edgecase",
+            "team": [
+                "sc",
+                "maithil",
+                "arya"
+            ]
+        },
+        {
+            "year": 2026,
+            "name": "Thakur Web Fusion 2.0",
+            "result": "1st Runner Up",
+            "description": "Built Campus Circular: why buy what someone nearby already has?",
+            "location": "Mumbai - Kandivali",
+            "projectUrl": "https://github.com/SC136/Web_Fusion_2.0",
+            "team": [
+                "sc",
+                "sai"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "26-9-2026",
+            "name": "SIES Enigma 5.0",
+            "result": "loss",
+            "description": "Built SymbioGraph, a graph-powered industrial symbiosis dashboard.",
+            "location": "Navi Mumbai - Nerul",
+            "team": [
+                "sc",
+                "sai",
+                "maithil"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "30-9-2026",
+            "name": "Smart India Hackathon 2026",
+            "result": "Qualified college round",
+            "description": "Building SAARTHI, edge voice AI with TinyML keyword spotting. Shortlisted in the college round.",
+            "team": [
+                "sc",
+                "sai",
+                "urine"
+            ]
+        },
+        {
+            "year": 2026,
+            "name": "Tutedude UI/UX Hackathon",
+            "result": "loss",
+            "description": "Redesigned Tutedude around one idea: the course fee is a deposit you get back for finishing.",
+            "location": "Online",
+            "team": [
+                "sc",
+                "karpe"
+            ]
+        },
+        {
+            "year": 2026,
+            "date": "5-10-2026",
+            "name": "Hackverse 2026",
+            "result": "loss",
+            "description": "Built TRACE-Space, temporal root-cause analysis under challenging evidence.",
+            "team": [
+                "sc",
+                "sai",
+                "slora",
+                "norris"
             ]
         }
     ]
