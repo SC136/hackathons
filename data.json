@@ -436,6 +436,23 @@
                 "joy",
                 "alston"
             ]
+        },
+        {
+            "year": 2025,
+            "date": "28-11-2025",
+            "name": "MumbaiHacks 2025",
+            "result": "Qualified Round 2",
+            "description": "Cleared the online Round 1 and made it to the in-person Round 2 at Bombay Exhibition Centre.",
+            "location": "Mumbai - Goregaon",
+            "duration": "28 hours"
+        },
+        {
+            "year": 2026,
+            "name": "De Anza WiCS Online Hackathon",
+            "result": "loss",
+            "description": "De Anza College's online hackathon on Devpost. Submitted a project, didn't place.",
+            "location": "Online",
+            "duration": "Varied"
         }
     ]
 }
