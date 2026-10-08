@@ -365,6 +365,7 @@
         },
         {
             "year": 2026,
+            "date": "27-8-2026",
             "name": "Thakur Web Fusion 2.0",
             "result": "1st Runner Up",
             "description": "Built Campus Circular: why buy what someone nearby already has?",
@@ -402,6 +403,7 @@
         },
         {
             "year": 2026,
+            "date": "21-9-2026",
             "name": "Tutedude UI/UX Hackathon",
             "result": "loss",
             "description": "Redesigned Tutedude around one idea: the course fee is a deposit you get back for finishing.",
@@ -448,6 +450,7 @@
         },
         {
             "year": 2026,
+            "date": "16-2-2026",
             "name": "De Anza WiCS Online Hackathon",
             "result": "loss",
             "description": "De Anza College's online hackathon on Devpost. Submitted a project, didn't place.",
