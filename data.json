@@ -65,6 +65,12 @@
         },
         "arya": {
             "name": "Arya"
+        },
+        "joy": {
+            "name": "Joy"
+        },
+        "alston": {
+            "name": "Alston"
         }
     },
     "entries": [
@@ -416,6 +422,19 @@
                 "sai",
                 "slora",
                 "norris"
+            ]
+        },
+        {
+            "year": 2025,
+            "name": "Techfest Meshmerize",
+            "result": "loss",
+            "description": "Built an autonomous maze-solving robot: mecanum wheels, 12 IR sensors, ESP32 + Arduino.",
+            "location": "Mumbai - Powai",
+            "team": [
+                "sc",
+                "david",
+                "joy",
+                "alston"
             ]
         }
     ]
