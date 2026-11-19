@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Hackathon Logbook</title>
+<link rel="icon" href="../favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#203e32">
+<meta name="description" content="Swar Churi’s personal hackathon journal. Projects, team photos, results, and weekends spent building.">
+<link rel="preload" href="../assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="desk-ink" aria-hidden="true"></div>
+<div class="container">
+  <header class="masthead">
+    <a class="author" href="https://swar.is-a.dev/"><span class="monogram" aria-hidden="true">sc.</span>Swar Churi</a>
+    <nav aria-label="On this page"><a href="#archive">Event index</a><a href="#summary">Stats</a></nav>
+  </header>
+  <main>
+  <section class="book-cover" aria-labelledby="book-title">
+    <div class="cover-type">
+      <div class="cover-record" id="cover-record" role="status">
+        <span class="logbook-loader"><span class="loader-track" aria-hidden="true"></span>Opening the logbook…</span>
+      </div>
+      <h1 id="book-title">Hackathon<br><em>Logbook</em></h1>
+      <p class="subtitle">A record of weekends spent<br>building instead of resting.</p>
+    </div>
+    <div class="print-stack">
+      <div class="back-print" aria-hidden="true"><img id="back-photo" src="../assets/cover/tech-a-thon.webp" alt=""></div>
+      <button class="front-print" id="flip-print" type="button" aria-label="Flip to the next event photo" aria-describedby="print-caption">
+        <img id="cover-photo" src="../assets/cover/enigma.webp" alt="The Enigma team sitting together with their medals">
+        <span class="print-caption" id="print-caption" aria-live="polite">SIES Enigma 3.0 <span>2025</span></span>
+      </button>
+      <span class="flip-hint" aria-hidden="true">↶ flip through</span>
+    </div>
+  </section>
+
+  <section id="archive" aria-labelledby="index-title">
+  <h2 class="section-title" id="index-title">Event index</h2>
+  <div class="filters" id="filters">
+    <div class="filter filter-search">
+      <label for="filter-search">Search events, projects, or teammates</label>
+      <input id="filter-search" type="search" placeholder="BEACON or Sai">
+    </div>
+    <button class="filter-toggle" id="filter-toggle" type="button"
+            aria-expanded="false" aria-controls="filter-options">Filters</button>
+    <div class="filter-options" id="filter-options">
+      <div class="filter">
+        <label for="filter-year">Year</label>
+        <select id="filter-year"></select>
+      </div>
+      <div class="filter">
+        <label for="filter-result">Result</label>
+        <select id="filter-result"></select>
+      </div>
+      <div class="filter">
+        <label for="filter-location">Location</label>
+        <select id="filter-location"></select>
+      </div>
+      <button class="filter-reset" id="filter-reset" type="button">Reset</button>
+    </div>
+  </div>
+
+  <p class="filter-status" id="filter-status" role="status"></p>
+  <div id="timeline" aria-busy="true"></div>
+  </section>
+
+  <div class="reflection" id="summary"></div>
+
+  </main>
+  <footer class="footer">
+    this page exists so i don’t forget how far i’ve come
+  </footer>
+
+</div>
+
+<dialog id="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-header">
+    <h2 id="gallery-title"></h2>
+    <form method="dialog"><button autofocus>Close</button></form>
+  </div>
+  <img id="gallery-image" alt="">
+  <div class="gallery-nav">
+    <button id="gallery-prev" type="button">Previous</button>
+    <span id="gallery-count" role="status"></span>
+    <button id="gallery-next" type="button">Next</button>
+  </div>
+</dialog>
+<script src="app.js"></script>
+</body>
+</html>

@@ -23,10 +23,12 @@ async function init() {
     members = data.members || {};
     entries = data.entries || [];
     await intro;
+    window.hideLoader && window.hideLoader();
   } catch (err) {
     console.error("Failed to load data.json:", err);
     timeline.innerHTML = '<p role="alert">The logbook couldn’t load. <a href="">Reload to try again</a>.</p>';
     timeline.setAttribute("aria-busy", "false");
+    window.hideLoader && window.hideLoader();
     return;
   }
 

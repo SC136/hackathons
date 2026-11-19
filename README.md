@@ -13,14 +13,20 @@ Use View project to open an event’s project page. Select a thumbnail to see th
 ## Stack
 
 - Vanilla HTML, CSS, JavaScript — no frameworks, no build step
-- [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) + [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono)
-- Dark theme with glassmorphism-style cards
+- Self-hosted Manrope and JetBrains Mono, with licenses in `assets/fonts/`
+- Animated ASCII wallpaper (koi, sharks, clouds, rain) behind frosted-glass cards, adapted from SC136/portfolios
+- `/alpha/` keeps the earlier clothbound journal design (Instrument Serif + Caveat)
 
 ## Project Structure
 
 ```
 ├── index.html      # Page shell — header, filters, timeline container, footer
-├── style.css       # Design system — dark theme, timeline layout, card styles
+├── style.css       # Frosted timeline, filters, stats and gallery
+├── wallpaper.css   # Scene palettes, wallpaper layers, floating dock
+├── wallpaper.js    # ASCII canvas scenes and dock
+├── og.png          # Social preview image (1200x630)
+├── loader.js       # Fullscreen ASCII loading screen
+├── alpha/          # Journal-cover edition
 ├── app.js          # Fetches data.json and renders the timeline + stats
 ├── data.json       # All hackathon data (entries + team members)
 └── assets/         # Hackathon images

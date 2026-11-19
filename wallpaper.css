@@ -1,0 +1,89 @@
+/* Scene palettes, wallpaper and dock from SC136/portfolios. */
+:root {
+    /* overwritten by the active wallpaper */
+    --sky: #2c5a4b;
+    --ink: #eef5ee;
+    --dim: rgba(238, 245, 238, 0.66);
+    --panel: rgba(18, 46, 37, 0.46);
+    --panel-2: rgba(255, 255, 255, 0.07);
+    --line: rgba(255, 255, 255, 0.16);
+    --veil: rgba(44, 90, 75, 0.35);
+    --shadow: rgba(0, 0, 0, 0.28);
+}
+
+/* ----- the wallpaper ----- */
+.sky, #wall { position: fixed; inset: 0; width: 100%; height: 100%; }
+.sky, #wall { pointer-events: none; }
+.sky { z-index: -3; background: var(--sky); transition: opacity 0.35s ease; }
+#wall { z-index: -2; transition: opacity 0.35s ease; }
+.swapping .sky, .swapping #wall { opacity: 0; }
+/* a light tint behind the content column; the wallpaper stays sharp, only the cards frost it */
+.veil {
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: min(1120px, 100%);
+    transform: translateX(-50%);
+    background: var(--veil);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    pointer-events: none;
+    transition: background-color 0.5s ease;
+}
+
+/* ----- floating controls ----- */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    backdrop-filter: blur(16px) saturate(1.3);
+    box-shadow: 0 8px 24px -10px var(--shadow);
+    font-size: 0.82rem;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+.dock {
+    position: fixed;
+    z-index: 10;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.dock button {
+    font: inherit;
+    color: var(--dim);
+    background: none;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px 6px 7px;
+    transition: background-color 0.2s, color 0.2s;
+}
+.dock button:hover { color: var(--ink); }
+.dock button[aria-pressed="true"] { color: var(--ink); background: var(--panel-2); box-shadow: 0 0 0 1px var(--line) inset; }
+.dock .sw { width: 18px; height: 18px; border-radius: 50%; box-shadow: 0 0 0 1px var(--line), 0 1px 3px rgba(0, 0, 0, 0.25); }
+.dock .sep { width: 1px; height: 18px; background: var(--line); margin: 0 3px; }
+.dock .ico { padding: 7px; }
+.dock .ico svg { width: 15px; height: 15px; display: block; }
+.pill:focus-visible, .dock button:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+.dock [hidden] { display: none; }
+@media (max-width: 720px) {
+    #wall { opacity: .62; }
+    .veil { -webkit-mask-image: none; mask-image: none; }
+    .dock { left: auto; right: 12px; transform: none; }
+    .dock .lbl { display: none; }
+    .dock button { padding: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sky, #wall, .veil, .pill, .dock button { transition: none; }
+}

@@ -3,16 +3,43 @@
 <head>
 <meta charset="UTF-8" />
 <title>Hackathon Logbook</title>
-<link rel="icon" href="./favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#2c5a4b">
+<meta name="description" content="Swar Churi’s hackathon logbook. Browse events, projects, team photos, and results.">
+<link rel="canonical" href="https://sc.is-a.dev/hackathons/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swar Churi">
+<meta property="og:url" content="https://sc.is-a.dev/hackathons/">
+<meta property="og:title" content="Hackathon Logbook · Swar Churi">
+<meta property="og:description" content="27 hackathons, 2024–2026. Projects, teams, results and photos from weekends spent building instead of resting.">
+<meta property="og:image" content="https://sc.is-a.dev/hackathons/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Hackathon Logbook, a record of weekends spent building instead of resting, over an ASCII koi pond">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hackathon Logbook · Swar Churi">
+<meta name="twitter:description" content="27 hackathons, 2024–2026. Projects, teams, results and photos.">
+<meta name="twitter:image" content="https://sc.is-a.dev/hackathons/og.png">
+<link rel="stylesheet" href="wallpaper.css">
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-<div class="container">
+<body class="loading">
+<div id="loader" role="status" aria-label="Loading the logbook">
+  <pre id="loader-art" aria-hidden="true"></pre>
+  <div class="loader-title">Hackathon Logbook</div>
+  <div class="loader-sub">opening the logbook<span aria-hidden="true">...</span></div>
+</div>
+<script src="loader.js"></script>
+<div class="sky" id="sky" aria-hidden="true"></div>
+<canvas id="wall" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="pill dock" id="dock" role="group" aria-label="Wallpaper"></div>
+<main class="container">
 
-  <div class="title">Hackathon Logbook</div>
+  <h1 class="title">Hackathon Logbook</h1>
   <div class="subtitle">
     A record of weekends spent building instead of resting.
   </div>
@@ -44,20 +71,15 @@
   </div>
 
   <p class="filter-status" id="filter-status" role="status"></p>
-  <div id="timeline" aria-busy="true">
-    <div class="logbook-loader" role="status">
-      <span class="loader-track" aria-hidden="true"></span>
-      Loading the logbook…
-    </div>
-  </div>
+  <div id="timeline" aria-busy="true"></div>
 
   <div class="reflection" id="summary"></div>
 
-  <div class="footer">
-    this page exists so i don’t forget how far i’ve come
-  </div>
-
-</div>
+  <footer class="footer">
+    <p>this page exists so i don’t forget how far i’ve come</p>
+    <a href="alpha/">Journal edition ↗</a>
+  </footer>
+</main>
 
 <dialog id="gallery" aria-labelledby="gallery-title">
   <div class="gallery-header">
@@ -72,5 +94,6 @@
   </div>
 </dialog>
 <script src="app.js"></script>
+<script src="wallpaper.js" defer></script>
 </body>
 </html>

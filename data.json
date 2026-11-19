@@ -405,6 +405,12 @@
             "team": [
                 "sc",
                 "sai"
+            ],
+            "images": [
+                "assets/web_fusion.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/web_fusion.webp"
             ]
         },
         {
