@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Hackathon Logbook</title>
+<link rel="icon" href="./favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css">
@@ -19,22 +20,36 @@
   <div class="divider"></div>
 
   <div class="filters" id="filters">
-    <div class="filter">
-      <label for="filter-year">Year</label>
-      <select id="filter-year"></select>
+    <div class="filter filter-search">
+      <label for="filter-search">Search events, projects, or teammates</label>
+      <input id="filter-search" type="search" placeholder="BEACON or Sai">
     </div>
-    <div class="filter">
-      <label for="filter-result">Result</label>
-      <select id="filter-result"></select>
+    <button class="filter-toggle" id="filter-toggle" type="button"
+            aria-expanded="false" aria-controls="filter-options">Filters</button>
+    <div class="filter-options" id="filter-options">
+      <div class="filter">
+        <label for="filter-year">Year</label>
+        <select id="filter-year"></select>
+      </div>
+      <div class="filter">
+        <label for="filter-result">Result</label>
+        <select id="filter-result"></select>
+      </div>
+      <div class="filter">
+        <label for="filter-location">Location</label>
+        <select id="filter-location"></select>
+      </div>
+      <button class="filter-reset" id="filter-reset" type="button">Reset</button>
     </div>
-    <div class="filter">
-      <label for="filter-location">Location</label>
-      <select id="filter-location"></select>
-    </div>
-    <button class="filter-reset" id="filter-reset" type="button">Reset</button>
   </div>
 
-  <div id="timeline"></div>
+  <p class="filter-status" id="filter-status" role="status"></p>
+  <div id="timeline" aria-busy="true">
+    <div class="logbook-loader" role="status">
+      <span class="loader-track" aria-hidden="true"></span>
+      Loading the logbook…
+    </div>
+  </div>
 
   <div class="reflection" id="summary"></div>
 
@@ -44,6 +59,18 @@
 
 </div>
 
+<dialog id="gallery" aria-labelledby="gallery-title">
+  <div class="gallery-header">
+    <h2 id="gallery-title"></h2>
+    <form method="dialog"><button autofocus>Close</button></form>
+  </div>
+  <img id="gallery-image" alt="">
+  <div class="gallery-nav">
+    <button id="gallery-prev" type="button">Previous</button>
+    <span id="gallery-count" role="status"></span>
+    <button id="gallery-next" type="button">Next</button>
+  </div>
+</dialog>
 <script src="app.js"></script>
 </body>
 </html>

@@ -61,7 +61,8 @@
             "url": "https://github.com/Slora123"
         },
         "norris": {
-            "name": "Norris"
+            "name": "Norris",
+            "url": "https://github.com/barnorris05-bond"
         },
         "arya": {
             "name": "Arya"
@@ -86,6 +87,9 @@
             ],
             "images": [
                 "assets/coffee_shop_ui.png"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/coffee_shop_ui.webp"
             ]
         },
         {
@@ -116,6 +120,9 @@
             ],
             "images": [
                 "assets/odyssey.png"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/odyssey.webp"
             ]
         },
         {
@@ -129,6 +136,9 @@
             "projectUrl": "https://github.com/SC136/TimeShift",
             "images": [
                 "assets/technova.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/technova.webp"
             ],
             "team": [
                 "sc",
@@ -154,6 +164,10 @@
             "images": [
                 "assets/enigma.jpg",
                 "assets/enigma1.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/enigma.webp",
+                "assets/thumbnails/enigma1.webp"
             ]
         },
         {
@@ -198,6 +212,12 @@
                 "assets/tech_a_thon2.jpg",
                 "assets/tech_a_thon3.jpg",
                 "assets/tech_a_thon4.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/tech_a_thon.webp",
+                "assets/thumbnails/tech_a_thon2.webp",
+                "assets/thumbnails/tech_a_thon3.webp",
+                "assets/thumbnails/tech_a_thon4.webp"
             ]
         },
         {
@@ -257,6 +277,9 @@
             ],
             "images": [
                 "assets/echelon.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/echelon.webp"
             ]
         },
         {
@@ -270,6 +293,10 @@
             "images": [
                 "assets/hackdeck.jpg",
                 "assets/hack_deck.jpeg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/hackdeck.webp",
+                "assets/thumbnails/hack_deck.webp"
             ],
             "team": [
                 "sc",
@@ -289,6 +316,10 @@
             "images": [
                 "assets/codeathon.jpeg",
                 "assets/code_a_thon_2.jpg"
+            ],
+            "thumbnails": [
+                "assets/thumbnails/codeathon.webp",
+                "assets/thumbnails/code_a_thon_2.webp"
             ],
             "team": [
                 "sc",
@@ -417,7 +448,7 @@
             "year": 2026,
             "date": "5-10-2026",
             "name": "Hackverse 2026",
-            "result": "loss",
+            "result": "13th Rank",
             "description": "Built TRACE-Space, temporal root-cause analysis under challenging evidence.",
             "team": [
                 "sc",

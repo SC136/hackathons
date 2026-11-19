@@ -1,43 +1,101 @@
 let members = {};
 let entries = [];
+const outcomes = {
+  winner: ["Winner", "win", "wins"],
+  runner: ["Runner-up", "runner-up finish", "runner-up finishes"],
+  finalist: ["Finalist", "finalist finish", "finalist finishes"],
+  qualified: ["Qualified", "qualification", "qualifications"],
+  ranked: ["Ranked", "ranked finish", "ranked finishes"],
+  loss: ["Loss", "loss", "losses"],
+  other: ["Other", "other result", "other results"],
+};
 
 async function init() {
+  const timeline = document.getElementById("timeline");
+  // Give the loader one visible pass, even when the data comes from cache.
+  const intro = new Promise((resolve) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 1300)));
+  });
   try {
     const response = await fetch("data.json");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     members = data.members || {};
     entries = data.entries || [];
+    await intro;
   } catch (err) {
     console.error("Failed to load data.json:", err);
+    timeline.innerHTML = '<p role="alert">The logbook couldn’t load. <a href="">Reload to try again</a>.</p>';
+    timeline.setAttribute("aria-busy", "false");
     return;
   }
 
-  const timeline = document.getElementById("timeline");
+  const search = document.getElementById("filter-search");
+  const status = document.getElementById("filter-status");
   const filterYear = document.getElementById("filter-year");
   const filterResult = document.getElementById("filter-result");
   const filterLocation = document.getElementById("filter-location");
   const filterReset = document.getElementById("filter-reset");
+  const filterToggle = document.getElementById("filter-toggle");
+  const selects = [filterYear, filterResult, filterLocation];
 
   setupFilters(entries, filterYear, filterResult, filterLocation);
-  renderTimeline(entries, timeline);
+  function applyFilters() {
+    const query = search.value.trim().toLowerCase();
+    const activeCount = selects.filter((select) => select.value !== "all").length;
+    filterToggle.textContent = activeCount ? `Filters (${activeCount})` : "Filters";
+    const filtered = entries.filter((entry) => {
+      const matchesYear = filterYear.value === "all" || String(entry.year) === filterYear.value;
+      const matchesResult = filterResult.value === "all" || resultStatus(entry.result) === filterResult.value;
+      const matchesLocation = filterLocation.value === "all" || entry.location === filterLocation.value;
+      return matchesYear && matchesResult && matchesLocation && matchesSearch(entry, query);
+    });
+    renderTimeline(filtered, timeline);
+    if (!filtered.length) {
+      status.textContent = "No matching hackathons. Try another search or reset the filters.";
+    } else if (query || filtered.length < entries.length) {
+      status.textContent = `${filtered.length} of ${entries.length} hackathons`;
+    } else {
+      status.textContent = "";
+    }
+  }
 
-  filterYear.addEventListener("change", () =>
-    applyFilters(entries, timeline, filterYear, filterResult, filterLocation)
-  );
-  filterResult.addEventListener("change", () =>
-    applyFilters(entries, timeline, filterYear, filterResult, filterLocation)
-  );
-  filterLocation.addEventListener("change", () =>
-    applyFilters(entries, timeline, filterYear, filterResult, filterLocation)
-  );
-  filterReset.addEventListener("click", () => {
+  applyFilters();
+  filterToggle.addEventListener("click", () => {
+    const expanded = filterToggle.getAttribute("aria-expanded") === "true";
+    filterToggle.setAttribute("aria-expanded", String(!expanded));
+  });
+  search.addEventListener("input", applyFilters);
+  for (const select of selects) {
+    select.addEventListener("change", applyFilters);
+  }
+  function resetFilters() {
+    search.value = "";
     filterYear.value = "all";
     filterResult.value = "all";
     filterLocation.value = "all";
-    applyFilters(entries, timeline, filterYear, filterResult, filterLocation);
-  });
+    applyFilters();
+  }
+  filterReset.addEventListener("click", resetFilters);
+
+  function showLinkedEvent() {
+    const id = location.hash.slice(1);
+    timeline.querySelector(".linked")?.classList.remove("linked");
+    if (!id.startsWith("event-")) return;
+    if (!document.getElementById(id) && entries.some((entry) => eventId(entry) === id)) {
+      resetFilters();
+    }
+    const card = document.getElementById(id);
+    if (card) {
+      card.classList.add("linked");
+      card.scrollIntoView();
+    }
+  }
+  window.addEventListener("hashchange", showLinkedEvent);
+  showLinkedEvent();
 
   renderSummary(entries);
+  timeline.setAttribute("aria-busy", "false");
 }
 
 init();
@@ -53,15 +111,11 @@ function setupFilters(list, filterYear, filterResult, filterLocation) {
   setOptions(filterYear, years, "All years");
   setOptions(filterLocation, locations, "All locations");
 
-  const resultOptions = [
-    { value: "all", label: "All results" },
-    { value: "win", label: "Wins" },
-    { value: "ok", label: "Finalist or qualified" },
-    { value: "loss", label: "Losses" },
-  ];
-  filterResult.innerHTML = resultOptions
-    .map((option) => `<option value="${option.value}">${option.label}</option>`)
-    .join("");
+  filterResult.add(new Option("All results", "all"));
+  const recorded = new Set(list.map((entry) => resultStatus(entry.result)));
+  for (const [value, [label]] of Object.entries(outcomes)) {
+    if (recorded.has(value)) filterResult.add(new Option(label, value));
+  }
 }
 
 function setOptions(select, items, allLabel) {
@@ -70,25 +124,12 @@ function setOptions(select, items, allLabel) {
     .join("");
 }
 
-function applyFilters(entries, timeline, filterYear, filterResult, filterLocation) {
-  const yearValue = filterYear.value;
-  const resultValue = filterResult.value;
-  const locationValue = filterLocation.value;
-
-  const filtered = entries.filter((entry) => {
-    const matchesYear = yearValue === "all" || String(entry.year) === yearValue;
-    const matchesResult =
-      resultValue === "all" || resultStatus(entry.result) === resultValue;
-    const matchesLocation =
-      locationValue === "all" || entry.location === locationValue;
-    return matchesYear && matchesResult && matchesLocation;
-  });
-
-  renderTimeline(filtered, timeline);
+function matchesSearch(entry, query) {
+  if (!query) return true;
+  const teammates = (entry.team || []).map(memberLabel);
+  return [entry.name, entry.description, entry.projectUrl, ...teammates]
+    .some((value) => value && value.toLowerCase().includes(query));
 }
-
-const cardTimers = new WeakMap();
-const cardFadeTimers = new WeakMap();
 
 function renderTimeline(list, timeline) {
   timeline.innerHTML = "";
@@ -103,7 +144,8 @@ function renderTimeline(list, timeline) {
     .forEach((year) => {
       const section = document.createElement("div");
       section.className = "year";
-      section.innerHTML = `<h2>${year}</h2>`;
+      const count = grouped[year].length;
+      section.innerHTML = `<h2>${year} <span class="year-count">· ${count} ${count === 1 ? "event" : "events"}</span></h2>`;
 
       const sortedEntries = grouped[year]
         .slice()
@@ -112,31 +154,29 @@ function renderTimeline(list, timeline) {
       sortedEntries.forEach((entry) => {
         const div = document.createElement("div");
         const status = resultStatus(entry.result);
+        div.id = eventId(entry);
         div.className = `entry ${status}`;
         div.innerHTML = `
         <div class="dot"></div>
         <div class="card">
           <div class="name">${entry.name}</div>
+          <div class="description">${entry.description || ""}</div>
           <div class="meta result">${entry.result}</div>
-          <div class="meta">${entry.description || ""}</div>
-          ${revealLine(entry)}
+          ${entry.date ? `<span class="meta reveal-date">${formatDate(entry.date)}</span>` : ""}
           <div class="meta">${detailLine(entry.location, entry.duration, entry.team)}</div>
+          ${entry.projectUrl ? `<a class="project-link" href="${safeUrl(entry.projectUrl)}" target="_blank" rel="noopener">View project</a>` : ""}
         </div>
       `;
-        const card = div.querySelector(".card");
         const images = getEntryImages(entry);
         if (images.length) {
-          card.classList.add("has-image");
-          card.style.setProperty("--card-image", `url('${safeCssUrl(images[0])}')`);
-          card.dataset.images = JSON.stringify(images);
+          const thumbnails = images.map((image, index) => entry.thumbnails?.[index] || image);
+          addEventPhoto(div.querySelector(".card"), entry.name, thumbnails, images);
         }
         section.appendChild(div);
       });
 
       timeline.appendChild(section);
     });
-
-  attachImageHover(timeline);
 }
 
 function detailLine(location, duration, team) {
@@ -147,18 +187,9 @@ function detailLine(location, duration, team) {
   return parts.join(" | ");
 }
 
-function revealLine(entry) {
-  const parts = [];
-  if (entry.date) {
-    const label = formatDate(entry.date);
-    if (label) parts.push(`<span class="reveal-date">${label}</span>`);
-  }
-  if (entry.projectUrl) {
-    const safeProject = safeUrl(entry.projectUrl);
-    parts.push(`<a href="${safeProject}" target="_blank" rel="noopener">Project</a>`);
-  }
-  if (!parts.length) return "";
-  return `<div class="meta reveal">${parts.join(" • ")}</div>`;
+function eventId(entry) {
+  const slug = entry.slug || `${entry.year}-${entry.name}`;
+  return "event-" + slug.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 function compareEntryDates(a, b) {
@@ -205,10 +236,6 @@ function safeUrl(url) {
   return String(url).replace(/"/g, "&quot;");
 }
 
-function safeCssUrl(url) {
-  return String(url).replace(/'/g, "%27").replace(/"/g, "%22");
-}
-
 function getEntryImages(entry) {
   if (Array.isArray(entry.images)) return entry.images.filter(Boolean);
   if (Array.isArray(entry.image)) return entry.image.filter(Boolean);
@@ -217,90 +244,94 @@ function getEntryImages(entry) {
   return [];
 }
 
-function attachImageHover(timeline) {
-  timeline.querySelectorAll(".card.has-image").forEach((card) => {
-    if (card.dataset.hoverBound) return;
-    card.dataset.hoverBound = "true";
-    card.addEventListener("mouseenter", () => startImageCycle(card));
-    card.addEventListener("mouseleave", () => stopImageCycle(card));
+function addEventPhoto(card, name, thumbnails, images) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "event-photo";
+  button.setAttribute("aria-label", `Open photos from ${name}`);
+  button.setAttribute("aria-haspopup", "dialog");
+  const photo = document.createElement("img");
+  photo.alt = "";
+  photo.loading = "lazy";
+  photo.decoding = "async";
+  let index = 0;
+  photo.src = thumbnails[index];
+  button.append(photo);
+  card.prepend(button);
+  button.addEventListener("click", () => openGallery(name, images, index));
+
+  if (images.length < 2) return;
+  let timer;
+  card.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "touch" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    window.clearInterval(timer);
+    timer = window.setInterval(() => {
+      if (!card.isConnected) {
+        window.clearInterval(timer);
+        return;
+      }
+      index = (index + 1) % images.length;
+      photo.src = thumbnails[index];
+    }, 1400);
+  });
+  card.addEventListener("pointerleave", () => {
+    window.clearInterval(timer);
+    index = 0;
+    photo.src = thumbnails[index];
   });
 }
 
-function startImageCycle(card) {
-  const images = parseImages(card.dataset.images);
-  if (images.length <= 1) return;
-  stopImageCycle(card);
-  let index = 0;
-  const timer = window.setInterval(() => {
-    index = (index + 1) % images.length;
-    transitionCardImage(card, images[index]);
-  }, 1400);
-  cardTimers.set(card, timer);
-}
+function openGallery(name, images, index) {
+  const dialog = document.getElementById("gallery");
+  const photo = document.getElementById("gallery-image");
+  const previous = document.getElementById("gallery-prev");
+  const next = document.getElementById("gallery-next");
+  const count = document.getElementById("gallery-count");
 
-function stopImageCycle(card) {
-  const timer = cardTimers.get(card);
-  if (timer) window.clearInterval(timer);
-  cardTimers.delete(card);
-  clearFadeTimer(card);
-  const images = parseImages(card.dataset.images);
-  if (images.length) {
-    card.style.setProperty("--card-image", `url('${safeCssUrl(images[0])}')`);
-    card.style.removeProperty("--card-image-next");
-    card.classList.remove("image-fade");
+  function show(step) {
+    index = (index + step + images.length) % images.length;
+    photo.src = images[index];
+    photo.alt = `${name}, photo ${index + 1}`;
+    count.textContent = `${index + 1} of ${images.length}`;
   }
-}
 
-function transitionCardImage(card, nextImage) {
-  const nextUrl = `url('${safeCssUrl(nextImage)}')`;
-  card.style.setProperty("--card-image-next", nextUrl);
-  card.classList.add("image-fade");
-  clearFadeTimer(card);
-  const timer = window.setTimeout(() => {
-    card.style.setProperty("--card-image", nextUrl);
-    card.style.removeProperty("--card-image-next");
-    card.classList.remove("image-fade");
-    cardFadeTimers.delete(card);
-  }, 260);
-  cardFadeTimers.set(card, timer);
-}
-
-function clearFadeTimer(card) {
-  const timer = cardFadeTimers.get(card);
-  if (timer) window.clearTimeout(timer);
-  cardFadeTimers.delete(card);
-}
-
-function parseImages(value) {
-  if (!value) return [];
-  try {
-    const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
-  } catch {
-    return [];
-  }
+  document.getElementById("gallery-title").textContent = name;
+  previous.hidden = next.hidden = images.length < 2;
+  previous.onclick = () => show(-1);
+  next.onclick = () => show(1);
+  dialog.onkeydown = (event) => {
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      show(event.key === "ArrowLeft" ? -1 : 1);
+    }
+  };
+  let start;
+  photo.ontouchstart = (event) => {
+    start = event.touches.length === 1 ? event.touches[0] : null;
+  };
+  photo.ontouchcancel = () => { start = null; };
+  photo.ontouchend = (event) => {
+    if (!start) return;
+    const end = event.changedTouches[0];
+    const dx = end.clientX - start.clientX;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(end.clientY - start.clientY)) {
+      show(dx < 0 ? 1 : -1);
+    }
+    start = null;
+  };
+  show(0);
+  dialog.showModal();
 }
 
 function resultStatus(result) {
-  const value = String(result || "").toLowerCase();
-  if (value.includes("loss")) return "loss";
-  if (
-    value.includes("winner") ||
-    value.includes("1st") ||
-    value.includes("first") ||
-    value.includes("runner")
-  ) {
-    return "win";
-  }
-  if (
-    value.includes("finalist") ||
-    value.includes("rank") ||
-    value.includes("qualified") ||
-    value.includes("stage")
-  ) {
-    return "ok";
-  }
-  return "ok";
+  const value = String(result || "").trim().toLowerCase();
+  if (/\brunner[ -]?up\b/.test(value)) return "runner";
+  if (/^(winner|win|won|first place|1st place)$/.test(value)) return "winner";
+  if (/\bfinalists?\b/.test(value)) return "finalist";
+  if (/\bqualified\b/.test(value)) return "qualified";
+  if (/\brank(ed)?\b/.test(value)) return "ranked";
+  if (value === "loss") return "loss";
+  return "other";
 }
 
 function teamLinks(team) {
@@ -316,9 +347,14 @@ function teamLinks(team) {
 }
 
 function renderSummary(entries) {
-  const wins = entries.filter((entry) => resultStatus(entry.result) === "win").length;
-  const finalists = entries.filter((entry) => /finalist/i.test(entry.result)).length;
-  const losses = entries.filter((entry) => resultStatus(entry.result) === "loss").length;
+  const counts = {};
+  for (const entry of entries) {
+    const status = resultStatus(entry.result);
+    counts[status] = (counts[status] || 0) + 1;
+  }
+  const breakdown = Object.entries(outcomes)
+    .filter(([key]) => counts[key])
+    .map(([key, [, one, many]]) => `${counts[key]} ${counts[key] === 1 ? one : many}`);
   const total = entries.length;
   const selfKey = "sc";
   const buddies = findHackathonBuddies(entries, selfKey, 5);
@@ -326,10 +362,18 @@ function renderSummary(entries) {
   const locations = mostCommonLocations(entries, 5);
   const commonLocation = locations[0] || null;
   const longestEvent = longestDuration(entries);
+  const hours = entries.map((entry) => parseHours(entry.duration)).filter((value) => value !== null);
+  const teammates = new Set(entries.flatMap((entry) => entry.team || []));
+  teammates.delete(selfKey);
+  const solo = entries.filter((entry) => entry.team?.length === 1 && entry.team[0] === selfKey).length;
 
   document.getElementById("summary").innerHTML = `
-    Out of ${total} hackathons: ${wins} wins, ${finalists} finalist finishes, ${losses} losses.
-    The rest still mattered — they shaped how I think, build, and iterate.
+    ${total} hackathons · ${breakdown.join(" · ")}
+    <dl class="stat-totals">
+      <div><dt>Recorded event hours</dt><dd>${hours.reduce((sum, value) => sum + value, 0)}<small>Across ${hours.length} timed events</small></dd></div>
+      <div><dt>Distinct teammates</dt><dd>${teammates.size}</dd></div>
+      <div><dt>Solo entries</dt><dd>${solo}</dd></div>
+    </dl>
     <div class="stats">
       <div class="stat">
         <span>Hackathon buddy</span>

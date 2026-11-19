@@ -6,7 +6,9 @@ A personal record of hackathons — wins, losses, and everything in between.
 
 ## Overview
 
-A static timeline site that tracks every hackathon I've participated in. Entries are color-coded by result (win / finalist / loss), filterable by year, result, and location, and include team member links, dates, and background images on hover.
+A static timeline site that tracks every hackathon I've participated in. Search by event, project, or teammate and narrow the results by year, result, and location. On phones, tap Filters to see those options. Entries are color-coded by result and include team member links, dates, and thumbnails where photos are available.
+
+Use View project to open an event’s project page. Select a thumbnail to see the original photos. Browse with the buttons, arrow keys, or a horizontal swipe.
 
 ## Stack
 
@@ -60,6 +62,7 @@ https://sc.is-a.dev/hackathons/data.json
 |---|---|---|---|
 | `year` | number | ✅ | |
 | `name` | string | ✅ | |
+| `slug` | string | ❌ | Unique permalink slug. Defaults to the year and event name. Keep the previous slug when renaming an event, or set a distinct slug for repeat events in one year. |
 | `result` | string | ✅ | `"loss"`, `"Finalists"`, `"2nd Runner Up"`, etc. |
 | `description` | string | ✅ | |
 | `date` | string | ❌ | Format: `DD-M-YYYY` |
@@ -67,6 +70,7 @@ https://sc.is-a.dev/hackathons/data.json
 | `duration` | string | ❌ | e.g. `"6 hours"`, `"48 hours"` |
 | `projectUrl` | string | ❌ | Link to source code |
 | `images` | string[] | ❌ | Relative paths to images |
+| `thumbnails` | string[] | ❌ | Smaller versions of the event photos, in the same order. Cards use the original images when omitted. |
 | `team` | string[] | ❌ | Keys from `members` object |
 
 ### Usage from another site
