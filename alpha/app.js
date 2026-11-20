@@ -167,7 +167,7 @@ function setOptions(select, items, allLabel) {
 function matchesSearch(entry, query) {
   if (!query) return true;
   const teammates = (entry.team || []).map(memberLabel);
-  return [entry.name, entry.description, entry.projectUrl, ...teammates]
+  return [entry.name, entry.description, entry.projectUrl, entry.liveUrl, ...teammates]
     .some((value) => value && value.toLowerCase().includes(query));
 }
 
@@ -205,7 +205,8 @@ function renderTimeline(list, timeline) {
           </div>
           <div class="description">${entry.description || ""}</div>
           <div class="meta">${detailLine(entry.date, entry.location, entry.duration, entry.team)}</div>
-          ${entry.projectUrl ? `<a class="project-link" href="${safeUrl(entry.projectUrl)}" target="_blank" rel="noopener">View project</a>` : ""}
+          ${entry.liveUrl ? `<a class="project-link" href="${safeUrl(entry.liveUrl)}" target="_blank" rel="noopener">Live preview</a>` : ""}
+          ${entry.projectUrl ? `<a class="project-link" href="${safeUrl(entry.projectUrl)}" target="_blank" rel="noopener">${entry.liveUrl && entry.projectUrl.startsWith("https://github.com/") ? "GitHub" : "View project"}</a>` : ""}
         </div>
       `;
         const images = getEntryImages(entry).map((path) => new URL(path, dataUrl).href);

@@ -80,8 +80,18 @@ async function init() {
   }
   filterReset.addEventListener("click", resetFilters);
 
-  function showLinkedEvent() {
+  const timelineView = document.getElementById("timeline-view");
+  const galleryView = document.getElementById("gallery-view");
+  const viewLinks = document.querySelectorAll(".logbook-views a");
+  renderPhotoGrid(entries, document.getElementById("photo-grid"));
+
+  function showView() {
     const id = location.hash.slice(1);
+    const showPhotos = id === "photos";
+    timelineView.hidden = showPhotos;
+    galleryView.hidden = !showPhotos;
+    viewLinks[0].setAttribute("aria-current", String(!showPhotos));
+    viewLinks[1].setAttribute("aria-current", String(showPhotos));
     timeline.querySelector(".linked")?.classList.remove("linked");
     if (!id.startsWith("event-")) return;
     if (!document.getElementById(id) && entries.some((entry) => eventId(entry) === id)) {
@@ -93,8 +103,8 @@ async function init() {
       card.scrollIntoView();
     }
   }
-  window.addEventListener("hashchange", showLinkedEvent);
-  showLinkedEvent();
+  window.addEventListener("hashchange", showView);
+  showView();
 
   renderSummary(entries);
   timeline.setAttribute("aria-busy", "false");
@@ -129,7 +139,7 @@ function setOptions(select, items, allLabel) {
 function matchesSearch(entry, query) {
   if (!query) return true;
   const teammates = (entry.team || []).map(memberLabel);
-  return [entry.name, entry.description, entry.projectUrl, ...teammates]
+  return [entry.name, entry.description, entry.projectUrl, entry.liveUrl, ...teammates]
     .some((value) => value && value.toLowerCase().includes(query));
 }
 
@@ -166,14 +176,16 @@ function renderTimeline(list, timeline) {
           <div class="meta result">${entry.result}</div>
           ${entry.date ? `<span class="meta reveal-date">${formatDate(entry.date)}</span>` : ""}
           <div class="meta">${detailLine(entry.location, entry.duration, entry.team)}</div>
-          ${entry.projectUrl ? `<a class="project-link" href="${safeUrl(entry.projectUrl)}" target="_blank" rel="noopener">View project</a>` : ""}
+          ${entry.liveUrl || entry.projectUrl ? `
+            <div class="project-links">
+              ${entry.liveUrl ? `<a class="project-link" href="${safeUrl(entry.liveUrl)}" target="_blank" rel="noopener">Live preview <span aria-hidden="true">↗</span></a>` : ""}
+              ${entry.projectUrl ? `<a class="project-link" href="${safeUrl(entry.projectUrl)}" target="_blank" rel="noopener">${entry.liveUrl && entry.projectUrl.startsWith("https://github.com/") ? "GitHub" : "View project"} <span aria-hidden="true">↗</span></a>` : ""}
+            </div>
+          ` : ""}
         </div>
       `;
-        const images = getEntryImages(entry);
-        if (images.length) {
-          const thumbnails = images.map((image, index) => entry.thumbnails?.[index] || image);
-          addEventPhoto(div.querySelector(".card"), entry.name, thumbnails, images);
-        }
+        const photos = getEventPhotos(entry);
+        if (photos.length) addEventPhoto(div.querySelector(".card"), photos);
         section.appendChild(div);
       });
 
@@ -246,23 +258,57 @@ function getEntryImages(entry) {
   return [];
 }
 
-function addEventPhoto(card, name, thumbnails, images) {
+function getEventPhotos(entry) {
+  return getEntryImages(entry).map((src, index) => ({
+    src,
+    thumbnail: entry.thumbnails?.[index] || src,
+    name: entry.name,
+    alt: `${entry.name}, photo ${index + 1}`,
+  }));
+}
+
+function createPhotoButton(className, label, thumbnail) {
   const button = document.createElement("button");
   button.type = "button";
-  button.className = "event-photo";
-  button.setAttribute("aria-label", `Open photos from ${name}`);
+  button.className = className;
+  button.setAttribute("aria-label", label);
   button.setAttribute("aria-haspopup", "dialog");
   const photo = document.createElement("img");
   photo.alt = "";
   photo.loading = "lazy";
   photo.decoding = "async";
-  let index = 0;
-  photo.src = thumbnails[index];
+  photo.src = thumbnail;
   button.append(photo);
-  card.prepend(button);
-  button.addEventListener("click", () => openGallery(name, images, index));
+  return button;
+}
 
-  if (images.length < 2) return;
+function renderPhotoGrid(list, grid) {
+  const photos = list.slice()
+    .sort((a, b) => b.year - a.year || compareEntryDates(a, b) || a.name.localeCompare(b.name))
+    .flatMap(getEventPhotos);
+  if (!photos.length) {
+    grid.textContent = "No photos yet.";
+    return;
+  }
+  photos.forEach((photo, index) => {
+    const button = createPhotoButton("gallery-tile", `Open ${photo.alt}`, photo.thumbnail);
+    const caption = document.createElement("span");
+    caption.textContent = photo.name;
+    button.append(caption);
+    button.addEventListener("click", () => openGallery(photos, index));
+    grid.append(button);
+  });
+}
+
+function addEventPhoto(card, photos) {
+  const { name, thumbnail } = photos[0];
+  const button = createPhotoButton("event-photo", `Open photos from ${name}`, thumbnail);
+  const photo = button.firstElementChild;
+  let index = 0;
+  card.prepend(button);
+  button.addEventListener("click", () => openGallery(photos, index));
+
+  if (photos.length < 2) return;
   let timer;
   card.addEventListener("pointerenter", (event) => {
     if (event.pointerType === "touch" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -272,33 +318,35 @@ function addEventPhoto(card, name, thumbnails, images) {
         window.clearInterval(timer);
         return;
       }
-      index = (index + 1) % images.length;
-      photo.src = thumbnails[index];
+      index = (index + 1) % photos.length;
+      photo.src = photos[index].thumbnail;
     }, 1400);
   });
   card.addEventListener("pointerleave", () => {
     window.clearInterval(timer);
     index = 0;
-    photo.src = thumbnails[index];
+    photo.src = thumbnail;
   });
 }
 
-function openGallery(name, images, index) {
+function openGallery(photos, index) {
   const dialog = document.getElementById("gallery");
   const photo = document.getElementById("gallery-image");
+  const title = document.getElementById("gallery-title");
   const previous = document.getElementById("gallery-prev");
   const next = document.getElementById("gallery-next");
   const count = document.getElementById("gallery-count");
 
   function show(step) {
-    index = (index + step + images.length) % images.length;
-    photo.src = images[index];
-    photo.alt = `${name}, photo ${index + 1}`;
-    count.textContent = `${index + 1} of ${images.length}`;
+    index = (index + step + photos.length) % photos.length;
+    const current = photos[index];
+    photo.src = current.src;
+    photo.alt = current.alt;
+    title.textContent = current.name;
+    count.textContent = `${index + 1} of ${photos.length}`;
   }
 
-  document.getElementById("gallery-title").textContent = name;
-  previous.hidden = next.hidden = images.length < 2;
+  previous.hidden = next.hidden = photos.length < 2;
   previous.onclick = () => show(-1);
   next.onclick = () => show(1);
   dialog.onkeydown = (event) => {

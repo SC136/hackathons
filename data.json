@@ -18,7 +18,7 @@
         },
         "nandan": {
             "name": "Nandan",
-            "url": "https://example.com"
+            "url": "https://github.com/NandanBhawsar"
         },
         "aryan": {
             "name": "Aryan",
@@ -26,7 +26,7 @@
         },
         "norvin": {
             "name": "Norvin",
-            "url": "https://example.com"
+            "url": "https://github.com/NrTheOgGod"
         },
         "maithil": {
             "name": "Maithil",
@@ -73,6 +73,14 @@
         },
         "alston": {
             "name": "Alston"
+        },
+        "cajetan": {
+            "name": "Cajetan",
+            "url": "https://github.com/Cajetan02"
+        },
+        "ishan": {
+            "name": "Ishan",
+            "url": "https://github.com/Ishaan2008-op"
         }
     },
     "entries": [
@@ -312,7 +320,7 @@
             "name": "DMCE Code-a-Thon",
             "result": "Top 8 Finalist",
             "description": "Good UI, but lacked depth in features.",
-            "location": "Airoli - Navi Mumbai",
+            "location": "Navi Mumbai - Airoli",
             "duration": "8 hours",
             "images": [
                 "assets/codeathon.jpeg",
@@ -402,6 +410,7 @@
             "result": "1st Runner Up",
             "description": "Built Campus Circular: why buy what someone nearby already has?",
             "location": "Mumbai - Kandivali",
+            "liveUrl": "https://webfusion20.vercel.app/",
             "projectUrl": "https://github.com/SC136/Web_Fusion_2.0",
             "team": [
                 "sc",
@@ -562,17 +571,27 @@
             "year": 2026,
             "date": "29-10-2026",
             "name": "Agnirakshak",
-            "result": "Participated",
+            "result": "Winner",
             "description": "Autonomous firefighting robot challenge at Crescendo, hosted by Fr. Conceicao Rodrigues College of Engineering.",
-            "location": "Mumbai - Bandra"
+            "location": "Mumbai - Bandra",
+            "team": [
+                "cajetan",
+                "sc",
+                "urine"
+            ]
         },
         {
             "year": 2026,
             "date": "30-10-2026",
             "name": "RoboWars",
-            "result": "Registered",
-            "description": "Combat robotics competition at Crescendo, hosted by Fr. Conceicao Rodrigues College of Engineering.",
-            "location": "Mumbai - Bandra"
+            "result": "Winner",
+            "description": "Won at the college level in the Crescendo combat robotics competition at Fr. Conceicao Rodrigues College of Engineering.",
+            "location": "Mumbai - Bandra",
+            "team": [
+                "sc",
+                "david",
+                "ishan"
+            ]
         }
     ]
 }

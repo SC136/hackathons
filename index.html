@@ -46,34 +46,45 @@
 
   <div class="divider"></div>
 
-  <div class="filters" id="filters">
-    <div class="filter filter-search">
-      <label for="filter-search">Search events, projects, or teammates</label>
-      <input id="filter-search" type="search" placeholder="BEACON or Sai">
+  <nav class="logbook-views" aria-label="Logbook views">
+    <a href="#events" aria-current="true">Timeline</a>
+    <a href="#photos">Gallery</a>
+  </nav>
+
+  <div id="timeline-view">
+    <div class="filters" id="filters">
+      <div class="filter filter-search">
+        <label for="filter-search">Search events, projects, or teammates</label>
+        <input id="filter-search" type="search" placeholder="BEACON or Sai">
+      </div>
+      <button class="filter-toggle" id="filter-toggle" type="button"
+              aria-expanded="false" aria-controls="filter-options">Filters</button>
+      <div class="filter-options" id="filter-options">
+        <div class="filter">
+          <label for="filter-year">Year</label>
+          <select id="filter-year"></select>
+        </div>
+        <div class="filter">
+          <label for="filter-result">Result</label>
+          <select id="filter-result"></select>
+        </div>
+        <div class="filter">
+          <label for="filter-location">Location</label>
+          <select id="filter-location"></select>
+        </div>
+        <button class="filter-reset" id="filter-reset" type="button">Reset</button>
+      </div>
     </div>
-    <button class="filter-toggle" id="filter-toggle" type="button"
-            aria-expanded="false" aria-controls="filter-options">Filters</button>
-    <div class="filter-options" id="filter-options">
-      <div class="filter">
-        <label for="filter-year">Year</label>
-        <select id="filter-year"></select>
-      </div>
-      <div class="filter">
-        <label for="filter-result">Result</label>
-        <select id="filter-result"></select>
-      </div>
-      <div class="filter">
-        <label for="filter-location">Location</label>
-        <select id="filter-location"></select>
-      </div>
-      <button class="filter-reset" id="filter-reset" type="button">Reset</button>
-    </div>
+
+    <p class="filter-status" id="filter-status" role="status"></p>
+    <div id="timeline" aria-busy="true"></div>
+
+    <div class="reflection" id="summary"></div>
   </div>
 
-  <p class="filter-status" id="filter-status" role="status"></p>
-  <div id="timeline" aria-busy="true"></div>
-
-  <div class="reflection" id="summary"></div>
+  <section id="gallery-view" aria-label="Hackathon photo gallery" hidden>
+    <div class="photo-grid" id="photo-grid"></div>
+  </section>
 
   <footer class="footer">
     <p>this page exists so i don’t forget how far i’ve come</p>

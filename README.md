@@ -74,7 +74,8 @@ https://sc.is-a.dev/hackathons/data.json
 | `date` | string | ❌ | Format: `DD-M-YYYY` |
 | `location` | string | ❌ | |
 | `duration` | string | ❌ | e.g. `"6 hours"`, `"48 hours"` |
-| `projectUrl` | string | ❌ | Link to source code |
+| `projectUrl` | string | ❌ | Link to source code or project page |
+| `liveUrl` | string | ❌ | Link to a live deployment |
 | `images` | string[] | ❌ | Relative paths to images |
 | `thumbnails` | string[] | ❌ | Smaller versions of the event photos, in the same order. Cards use the original images when omitted. |
 | `team` | string[] | ❌ | Keys from `members` object |
